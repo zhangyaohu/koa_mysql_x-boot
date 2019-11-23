@@ -1,10 +1,10 @@
-// 创建数据库
+// 创建数据库CREATE TABLE `user` (
 const CREATE_TABLE = `CREATE TABLE IF NOT EXISTS user(
     user_id INT(5) NOT NULL AUTO_INCREMENT,
-    user_name VARCHAR(255) NOT NULL,
-    user_phone VARCHAR(255) NOT NULL,
+    user_name VARCHAR(255) CHARACTER SET utf8 NOT NULL,
+    user_phone VARCHAR(255) CHARACTER SET utf8 NOT NULL,
     PRIMARY KEY (user_id)
-);`.replace(/[\r\n]/g, '')
+) ENGINE=INNODB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC`.replace(/[\r\n]/g, '')
 
 // 查询数据表
 const QUERY_TABLE = (tableName) => `SELECT * FROM ${tableName}`
@@ -16,11 +16,12 @@ const INSERT_TABLE = (tableName, {key, val}) => `INSERT INTO ${tableName}(${key}
 const UPDATE_TABLE = (tableName, {primaryKey, primaryVal}, {key, value}) => `UPDATE ${tableName} SET ${key}=${val} WHERE(${primaryKey}=${primaryVal});`
 
 // 删除数据
-const DELETE_TABLE = (tableName, {primaryKey, primaryVal}) => `DELETE FROM user WHERE(${primaryKey}=${primaryVal});`
+const DELETE_TABLE = (tableName, {primaryKey, primaryVal}) => `DELETE FROM user WHERE ${primaryKey}=${primaryVal};`
 
 module.exports = {
     CREATE_TABLE,
     INSERT_TABLE,
     UPDATE_TABLE,
-    DELETE_TABLE
+    DELETE_TABLE,
+    QUERY_TABLE
 }
