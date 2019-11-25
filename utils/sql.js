@@ -18,10 +18,14 @@ const UPDATE_TABLE = (tableName, {primaryKey, primaryVal}, {key, value}) => `UPD
 // 删除数据
 const DELETE_TABLE = (tableName, {primaryKey, primaryVal}) => `DELETE FROM user WHERE ${primaryKey}=${primaryVal};`
 
+//条件查询
+const QUERY_SINGLE =  (tableName, {key, val}) => `SELECT * FROM ${tableName} WHERE ${key}=${val}`
+
 module.exports = {
     CREATE_TABLE,
     INSERT_TABLE,
     UPDATE_TABLE,
     DELETE_TABLE,
-    QUERY_TABLE
+    QUERY_TABLE,
+    QUERY_SINGLE
 }

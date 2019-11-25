@@ -1,5 +1,6 @@
 const router = require('koa-router')()
 const { query } = require('../utils/query')
+const userController = require('../controller/user');
 const fs = require('fs');
 const path = require('path');
 
@@ -13,68 +14,14 @@ const {
   DELETE_TABLE
 } = require('../utils/sql')
 
-router.get('/', function (ctx, next) {
-  ctx.body = 'this is a users response!'
-})
-
-router.get('/bar', function (ctx, next) {
-  ctx.body = 'this is a users/bar response'
-})
-
-router.post('/login', async function (ctx, next) {
-  let bodyParam = ctx.request.body, emptyRegx = /^\s*$/;
-  if(emptyRegx.test(bodyParam.name) || emptyRegx.test(bodyParam.password)) {
-    ctx.body="用户名或者密码错误"
-  }
-  console.log(bodyParam);
-  let sql = 'INSERT INTO user (user_name, user_phone) VALUES ("'+ bodyParam.name + '","'+ bodyParam.password+ '")';
-  let result = {};
-  await query(sql).then((resp) => {
-    result = {
-      'status': '200',
-      'message': '成功'
-    }
-  });
-  ctx.body = result;
-})
-
-router.get('/user', async (ctx, next) => {
-  let result = {};
-  await query(QUERY_TABLE('user')).then((resp) => {
-    result = {
-      'status': '200',
-      'message': '成功',
-      'data': resp
-    }
-  });
-  ctx.body = result;
-})
-
-router.delete('/user', async (ctx, next) => {
-  let result = {};
-  await query(DELETE_TABLE('user', {primaryKey: 'user_id', primaryVal: ctx.query.user_Id}))
-    .then((resp) => {
-       result = {
-         'status': '200',
-         'message': '成功',
-         'data': resp
-       }
-    })
-    ctx.body = result;
-})
-
-router.delete('/users', async (ctx, next) => {
-  let result = {};
-  await query(`delete from user where user_id in (${ctx.query.user_Id})`)
-  .then((resp) => {
-    result = {
-      'status': '200',
-      'message': '成功',
-      'data': resp
-    }
- })
- ctx.body = result;;
-})
+//查询路由
+router.get('/user', userController.GetAllUserController);
+//添加路由
+router.post('/add', userController.AddUserController)
+//删除路由
+router.delete('/user', userController.DeleteUserController);
+//修改路由
+router.put('/user',  userController.UpdateUserController);
 
 router.post('/upload', (ctx, next) => {
   const file = ctx.request.files.file;//获取上传文件
@@ -88,20 +35,6 @@ router.post('/upload', (ctx, next) => {
 
   reader.pipe(upStream);
   ctx.body = path.resolve(`public/files/${newFilename}.${ext}`);
-})
-
-router.put('/user', async (ctx, next) => {
-  let result = {};
-  console.log(ctx.request.body);
-  await query('update user set user_name="' + ctx.request.body['user_name'] + `"where user_id="` + ctx.request.body['user_Id'] +'"')
-  .then((resp) => {
-    result = {
-      'status': '200',
-      'message': '成功',
-      'data': resp
-    }
- })
- ctx.body = result;;
 })
 
 module.exports = router
