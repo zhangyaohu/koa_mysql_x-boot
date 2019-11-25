@@ -124,33 +124,40 @@ const deleteUser = async (ctx, next, param) => {
 //修改用户
 const updateUser = async (ctx, next, param) => {
 	let sql = `update t_user set `;
-	Object.keys(param).forEach(async (name) => {
     if(param.username) {
-			sql += `username= ${param.username},`
-		}else if(param.email) {
-			sql += `email= ${param.email},`
-		}else if(param.phone) {
-			sql += `email= ${param.email},`
-		}else if(param.sex) {
-			sql += `sex= ${param.sex},`
-		}else if(param.avatar) {
-			sql += `avatar= ${param.avatar},`
-		}else if(param.department_id) {
-			sql += `email= ${param.department_id},`
-		}else if(param.type) {
-			sql += `type= ${param.type},`
-		}else if(sql.endsWith(',')) {
-			sql = sql.slice(0, sql.lenght - 1);
-		}else {}
-		sql += ` where id = ${param.id}`
+			sql = sql + `username= '${param.username}',`
+    }
+    if(param.email) {
+      sql = sql + `email= '${String(param.email)}',`;
+      console.log(sql);
+    }
+    if(param.phone) {
+			sql += `phone= '${param.email}',`
+    }
+    if(param.sex) {
+			sql += `sex= '${param.sex}',`
+    }
+    if(param.avatar) {
+			sql += `avatar= '${param.avatar}',`
+    }
+    if(param.department_id) {
+			sql += `department_id= '${param.department_id}',`
+    }
+    if(param.type) {
+			sql += `type= '${param.type}',`
+    }
+    if(sql.endsWith(',')) {
+      sql = sql.slice(0, sql.length - 1);
+    }
+    console.log(sql);
+		sql += ` where id = '${param.id}'`
 		console.log(sql);
 		result = await query(sql);
 		return ctx.body = {
 			status: '200',
 			message: '成功',
 			data: result
-		}
-	})
+    }
 }
 
 module.exports = {
