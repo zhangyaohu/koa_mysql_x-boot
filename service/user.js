@@ -1,4 +1,6 @@
 const { query } = require('../utils/query');
+const fs = require('fs');
+const path = require('path');
 const { 
 	parseSort, 
 	isEmpty, 
@@ -13,7 +15,7 @@ const getAllUser = async (ctx, next, param) => {
 	let total = await query(sql);
 	let sort = parseSort(param.sort);
 	let sql1 = `select * from t_user`
-	if(sort.orderBy && sort.orderDirection) {
+	if(sort && sort.orderBy && sort.orderDirection) {
 		sql1 += ` ORDER BY ${sort.orderBy} ${sort.orderDirection}`
 	}if(param.pageIndex && param.pageSize) {
 		sql += ` limit ${(param.pageIndex - 1) * param.pageSize} ${param.pageSize}`
@@ -123,13 +125,12 @@ const deleteUser = async (ctx, next, param) => {
 
 //修改用户
 const updateUser = async (ctx, next, param) => {
-	let sql = `update t_user set `;
+	  let sql = `update t_user set `;
     if(param.username) {
 			sql = sql + `username= '${param.username}',`
     }
     if(param.email) {
       sql = sql + `email= '${String(param.email)}',`;
-      console.log(sql);
     }
     if(param.phone) {
 			sql += `phone= '${param.email}',`
@@ -149,9 +150,7 @@ const updateUser = async (ctx, next, param) => {
     if(sql.endsWith(',')) {
       sql = sql.slice(0, sql.length - 1);
     }
-    console.log(sql);
 		sql += ` where id = '${param.id}'`
-		console.log(sql);
 		result = await query(sql);
 		return ctx.body = {
 			status: '200',
@@ -159,10 +158,25 @@ const updateUser = async (ctx, next, param) => {
 			data: result
     }
 }
+//上传用户图片service
+const uploadUser = (ctx, next, param) => {
+  const file = ctx.request.files.file;//获取上传文件
+  const reader = fs.createReadStream(file.path);//创建可读流
+  const ext = file.name.split('.').pop();//获取上传文件扩展名;
+  const newFilename = new Date().getTime()+'-'+file.name.split('.')[0];
+  const upStream = fs.createWriteStream(`public/files/${newFilename}.${ext}`);
+  reader.pipe(upStream);
+  return ctx.body = {
+		status: '200',
+		message: '成功',
+		dasta:  path.resolve(`public/files/${newFilename}.${ext}`)
+	};
+}
 
 module.exports = {
 	GetAllUser: getAllUser,
 	AddUser: addUser,
 	DeleteUser: deleteUser,
-	UpdateUser: updateUser
+	UpdateUser: updateUser,
+	UploadUser: uploadUser
 }
