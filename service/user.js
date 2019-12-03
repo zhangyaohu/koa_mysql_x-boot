@@ -15,10 +15,41 @@ const getAllUser = async (ctx, next, param) => {
 	let total = await query(sql);
 	let sort = parseSort(param.sort);
 	let sql1 = `select * from t_user`
+	if(param.username) {
+		sql1 += ` where username='${param.username}'`
+	}else if(!param.username && param.sex) {
+		sql1 += ` where sex='${param.sex}'` 
+	}else if(param.username && param.sex) {
+    sql1 += ` and sex='${param.email}'` 
+	}else if(!param.username && !param.sex && param.email) {
+    sql1 += ` where email='${param.email}'` 
+	}else if((param.username || param.sex) && param.email) {
+    sql1 += ` and email='${param.email}'` 
+	}else if(!param.username && !param.sex && !param.email && param.phone) {
+    sql1 += ` where mobile='${param.phone}'` 
+	}else if((param.username || param.sex || param.email) && param.phone) {
+    sql1 += ` and mobile='${param.phone}'` 
+	}else if((!param.username && !param.sex && !param.email && !param.phone) && param.status) {
+    sql1 += ` where status='${param.status}'` 
+	}else if((param.username || param.sex || param.email || param.phone) && param.status) {
+    sql1 += ` and status='${param.status}'` 
+	}else if((!param.username && !param.sex && !param.email && !param.phone && param.status) && param.type) {
+    sql1 += ` where type='${param.phone}'` 
+	}else if((param.username || param.sex || param.email || param.phone || param.status) && param.type) {
+    sql1 += ` and type='${param.phone}'` 
+	}else if((!param.username && !param.sex && !param.email && !param.phone && !param.status && !param.type) && param.start_time) {
+    sql1 += ` where create_time='${param.start_time}'` 
+	}else if((param.username || param.sex || param.email || param.phone || param.status || param.type) && param.start_time) {
+    sql1 += ` and create_time='${param.start_time}'` 
+	}else if((!param.username && !param.sex && !param.email && !param.phone && !param.status && !param.type && !param.start_time) && param.end_time) {
+    sql1 += ` where create_time='${param.end_time}'` 
+	}else if((param.username || param.sex || param.email || param.phone || param.status || param.type || param.start_time) && param.end_time) {
+    sql1 += ` and '${param.end_time}'` 
+	}
 	if(sort && sort.orderBy && sort.orderDirection) {
 		sql1 += ` ORDER BY ${sort.orderBy} ${sort.orderDirection}`
 	}if(param.pageIndex && param.pageSize) {
-		sql += ` limit ${(param.pageIndex - 1) * param.pageSize} ${param.pageSize}`
+		sql1 += ` limit ${(param.pageIndex - 1) * param.pageSize},${param.pageSize}`
 	}
 	let result  = await query(sql1);
 	return ctx.body = {

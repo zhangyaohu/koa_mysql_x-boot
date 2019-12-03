@@ -12,6 +12,7 @@ const addUserController = (ctx, next) => {
 
 const deleteUserController = function (ctx, next) {
 	let reqParam = ctx.request.query;
+	console.log(reqParam);
 	return userService.DeleteUser(ctx, next, reqParam); 
 }
 
