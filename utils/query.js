@@ -13,6 +13,7 @@ const query = (sql, val) => {
         reject(err)
       }
       else {
+        console.log(sql);
         connection.query(sql, val, (err, fields) => {
           if (err) {
             reject(err)

@@ -203,11 +203,23 @@ const uploadUser = (ctx, next, param) => {
 		dasta:  path.resolve(`public/files/${newFilename}.${ext}`)
 	};
 }
+//启用停用接口
+const updateStatus = async (ctx, next, param) => {
+	console.log(param);
+	let sql = `update t_user set status = ? where id= ?`, result = {};
+	result = await query(sql, [param.status, param.id]);
+	return ctx.body = {
+		status: '200',
+		message: '成功',
+		dasta:  result
+	}
+}
 
 module.exports = {
 	GetAllUser: getAllUser,
 	AddUser: addUser,
 	DeleteUser: deleteUser,
 	UpdateUser: updateUser,
-	UploadUser: uploadUser
+	UploadUser: uploadUser,
+	UpdateStatus: updateStatus
 }

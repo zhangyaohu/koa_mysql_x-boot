@@ -26,10 +26,18 @@ const uploadUserController = function (ctx, next) {
 	return userService.UploadUser(ctx, next, reqParam);
 }
 
+const updateStatusController = function (ctx, next) {
+	// console.log(ctx.query.body + '==' + ctx.request.query);
+	console.log(JSON.stringify(ctx.request.query));
+	let reqParam = ctx.request.body;
+	return userService.UpdateStatus(ctx, next, reqParam);
+}
+
 module.exports = {
 	GetAllUserController: getAllUserController,
 	AddUserController: addUserController,
 	DeleteUserController: deleteUserController,
 	UpdateUserController: updateUserController,
 	UploadUserController: uploadUserController,
+	UpdateStatusController: updateStatusController
 }

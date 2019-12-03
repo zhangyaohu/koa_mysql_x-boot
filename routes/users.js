@@ -11,6 +11,8 @@ router.post('/add', userController.AddUserController)
 router.delete('/user', userController.DeleteUserController);
 //修改路由
 router.put('/user',  userController.UpdateUserController);
+//禁用路由
+router.put('/user/status', userController.UpdateStatusController);
 //上传用户图片
 router.post('/upload', userController.UploadUserController);
 
