@@ -21,11 +21,11 @@ const loginController = async (ctx, next) => {
 		return ctx.body = result;
 }
 
-let verifyCodeController = function (ctx, next) {
-	 let sql = loginService.VerifyCodeService();
+let verifyCodeController = async function (ctx, next) {
+	 let sql = await loginService.VerifyCodeService();
 	 result = {
-		 'status': '200',
-		 'message': '成功',
+		 'status': ctx.status,
+		 'message': ctx.message,
 		 'data': sql.data
 	 }
 	 return ctx.body = result;

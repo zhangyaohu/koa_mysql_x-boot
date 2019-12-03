@@ -1,4 +1,6 @@
 const { query } = require('../utils/query');
+const fs = require('fs');
+const path = require('path');
 const { 
 	parseSort, 
 	isEmpty, 
@@ -13,10 +15,41 @@ const getAllUser = async (ctx, next, param) => {
 	let total = await query(sql);
 	let sort = parseSort(param.sort);
 	let sql1 = `select * from t_user`
-	if(sort.orderBy && sort.orderDirection) {
+	if(param.username) {
+		sql1 += ` where username='${param.username}'`
+	}else if(!param.username && param.sex) {
+		sql1 += ` where sex='${param.sex}'` 
+	}else if(param.username && param.sex) {
+    sql1 += ` and sex='${param.email}'` 
+	}else if(!param.username && !param.sex && param.email) {
+    sql1 += ` where email='${param.email}'` 
+	}else if((param.username || param.sex) && param.email) {
+    sql1 += ` and email='${param.email}'` 
+	}else if(!param.username && !param.sex && !param.email && param.phone) {
+    sql1 += ` where mobile='${param.phone}'` 
+	}else if((param.username || param.sex || param.email) && param.phone) {
+    sql1 += ` and mobile='${param.phone}'` 
+	}else if((!param.username && !param.sex && !param.email && !param.phone) && param.status) {
+    sql1 += ` where status='${param.status}'` 
+	}else if((param.username || param.sex || param.email || param.phone) && param.status) {
+    sql1 += ` and status='${param.status}'` 
+	}else if((!param.username && !param.sex && !param.email && !param.phone && param.status) && param.type) {
+    sql1 += ` where type='${param.phone}'` 
+	}else if((param.username || param.sex || param.email || param.phone || param.status) && param.type) {
+    sql1 += ` and type='${param.phone}'` 
+	}else if((!param.username && !param.sex && !param.email && !param.phone && !param.status && !param.type) && param.start_time) {
+    sql1 += ` where create_time='${param.start_time}'` 
+	}else if((param.username || param.sex || param.email || param.phone || param.status || param.type) && param.start_time) {
+    sql1 += ` and create_time='${param.start_time}'` 
+	}else if((!param.username && !param.sex && !param.email && !param.phone && !param.status && !param.type && !param.start_time) && param.end_time) {
+    sql1 += ` where create_time='${param.end_time}'` 
+	}else if((param.username || param.sex || param.email || param.phone || param.status || param.type || param.start_time) && param.end_time) {
+    sql1 += ` and '${param.end_time}'` 
+	}
+	if(sort && sort.orderBy && sort.orderDirection) {
 		sql1 += ` ORDER BY ${sort.orderBy} ${sort.orderDirection}`
 	}if(param.pageIndex && param.pageSize) {
-		sql += ` limit ${(param.pageIndex - 1) * param.pageSize} ${param.pageSize}`
+		sql1 += ` limit ${(param.pageIndex - 1) * param.pageSize},${param.pageSize}`
 	}
 	let result  = await query(sql1);
 	return ctx.body = {
@@ -123,13 +156,12 @@ const deleteUser = async (ctx, next, param) => {
 
 //修改用户
 const updateUser = async (ctx, next, param) => {
-	let sql = `update t_user set `;
+	  let sql = `update t_user set `;
     if(param.username) {
 			sql = sql + `username= '${param.username}',`
     }
     if(param.email) {
       sql = sql + `email= '${String(param.email)}',`;
-      console.log(sql);
     }
     if(param.phone) {
 			sql += `phone= '${param.email}',`
@@ -149,9 +181,7 @@ const updateUser = async (ctx, next, param) => {
     if(sql.endsWith(',')) {
       sql = sql.slice(0, sql.length - 1);
     }
-    console.log(sql);
 		sql += ` where id = '${param.id}'`
-		console.log(sql);
 		result = await query(sql);
 		return ctx.body = {
 			status: '200',
@@ -159,10 +189,25 @@ const updateUser = async (ctx, next, param) => {
 			data: result
     }
 }
+//上传用户图片service
+const uploadUser = (ctx, next, param) => {
+  const file = ctx.request.files.file;//获取上传文件
+  const reader = fs.createReadStream(file.path);//创建可读流
+  const ext = file.name.split('.').pop();//获取上传文件扩展名;
+  const newFilename = new Date().getTime()+'-'+file.name.split('.')[0];
+  const upStream = fs.createWriteStream(`public/files/${newFilename}.${ext}`);
+  reader.pipe(upStream);
+  return ctx.body = {
+		status: '200',
+		message: '成功',
+		dasta:  path.resolve(`public/files/${newFilename}.${ext}`)
+	};
+}
 
 module.exports = {
 	GetAllUser: getAllUser,
 	AddUser: addUser,
 	DeleteUser: deleteUser,
-	UpdateUser: updateUser
+	UpdateUser: updateUser,
+	UploadUser: uploadUser
 }
