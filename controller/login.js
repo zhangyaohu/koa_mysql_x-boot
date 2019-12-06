@@ -21,14 +21,8 @@ const loginController = async (ctx, next) => {
 		return ctx.body = result;
 }
 
-let verifyCodeController = async function (ctx, next) {
-	 let sql = await loginService.VerifyCodeService();
-	 result = {
-		 'status': ctx.status,
-		 'message': ctx.message,
-		 'data': sql.data
-	 }
-	 return ctx.body = result;
+let verifyCodeController = function (ctx, next) {
+	 return loginService.VerifyCodeService(ctx, next);
 }
 
 module.exports = {

@@ -33,11 +33,17 @@ const updateStatusController = function (ctx, next) {
 	return userService.UpdateStatus(ctx, next, reqParam);
 }
 
+const updateUserPswController = function (ctx, next) {
+	let reqParam = ctx.request.body;
+	return userService.UpdatePsw(ctx, next, reqParam);
+}
+
 module.exports = {
 	GetAllUserController: getAllUserController,
 	AddUserController: addUserController,
 	DeleteUserController: deleteUserController,
 	UpdateUserController: updateUserController,
 	UploadUserController: uploadUserController,
-	UpdateStatusController: updateStatusController
+	UpdateStatusController: updateStatusController,
+	UpdateUserPswController: updateUserPswController
 }
