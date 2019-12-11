@@ -12,8 +12,9 @@ const  getParentService = async (ctx, next, param) => {
 }
 //删除部门
 const deleteParentService = async (ctx, next, param) => {
-	let result = {}, sql = `delete  from t_department where  id in (?)`;
-	result = await query(sql, ctx.params.id);
+	let result = {}, sql = `delete  from t_department where  id in (?)`
+	console.log(param.ids.split(','));
+	result = await query(sql, ...param.ids.split(','));
 	return ctx.body = {
 		'status': '200',
 		'message': '成功',

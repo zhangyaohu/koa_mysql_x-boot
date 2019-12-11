@@ -4,7 +4,7 @@ router.prefix('/department')
 //查询父级部门
 router.get('/get-parent/:parent_id', departmentController.GetParentController);
 //删除部门
-router.delete('/:id', departmentController.DeleteParentController);
+router.delete('/delete', departmentController.DeleteParentController);
 //添加部门
 router.post('/add', departmentController.AddController);
 //更新部门
