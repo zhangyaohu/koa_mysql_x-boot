@@ -165,7 +165,10 @@ const updateUser = async (ctx, next, param) => {
       sql = sql + `email= '${String(param.email)}',`;
     }
     if(param.phone) {
-			sql += `phone= '${param.email}',`
+			sql += `phone= '${param.mobile}',`
+		}
+		if(param.password) {
+			sql += `password= '${param.password}',`
     }
     if(param.sex) {
 			sql += `sex= '${param.sex}',`
