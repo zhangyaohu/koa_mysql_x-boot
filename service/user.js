@@ -145,8 +145,9 @@ let add = async (ctx,param) => {
 }
 //删除用户包括批量删除，单个删除
 const deleteUser = async (ctx, next, param) => {
-	let sql = `DELETE FROM t_user WHERE id IN (${param.ids})`, result = {};
-	result = await query(sql);
+	let sql = `DELETE FROM t_user WHERE id IN (?)`, result = {};
+	console.log(param.ids.split(','));
+	result = await query(sql, ...param.ids.split(','));
 	return ctx.body = {
 		status: '200',
 		message: '成功',
@@ -191,6 +192,13 @@ const updateUser = async (ctx, next, param) => {
 }
 //上传用户图片service
 const uploadUser = (ctx, next, param) => {
+	fs.exists('public/files', (exists) => {
+     if(!exists) {
+			 fs.mkdir('public/files', (err) => {
+				 console.log('err');
+			 })
+		 }
+	})
   const file = ctx.request.files.file;//获取上传文件
   const reader = fs.createReadStream(file.path);//创建可读流
   const ext = file.name.split('.').pop();//获取上传文件扩展名;
@@ -200,14 +208,24 @@ const uploadUser = (ctx, next, param) => {
   return ctx.body = {
 		status: '200',
 		message: '成功',
-		dasta:  path.resolve(`public/files/${newFilename}.${ext}`)
+		data:  path.resolve(`public/files/${newFilename}.${ext}`)
 	};
 }
 //启用停用接口
 const updateStatus = async (ctx, next, param) => {
-	console.log(param);
 	let sql = `update t_user set status = ? where id= ?`, result = {};
 	result = await query(sql, [param.status, param.id]);
+	return ctx.body = {
+		status: '200',
+		message: '成功',
+		dasta:  result
+	}
+}
+
+//修改密码
+const updatePsw = async (ctx, next, param) => {
+	let sql = `update t_user set password = ? where id = ?`, result = {};
+	result = await query(sql, [param.password, param.id]);
 	return ctx.body = {
 		status: '200',
 		message: '成功',
@@ -221,5 +239,6 @@ module.exports = {
 	DeleteUser: deleteUser,
 	UpdateUser: updateUser,
 	UploadUser: uploadUser,
-	UpdateStatus: updateStatus
+	UpdateStatus: updateStatus,
+	UpdatePsw: updatePsw
 }

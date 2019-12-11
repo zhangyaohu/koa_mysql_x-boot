@@ -14,15 +14,16 @@ const LoginService = function () {
 	return sql;
 }
 //或得验证码
-const verifyCodeService =  function () {
+const verifyCodeService =  async function (ctx, next) {
 	let options = {
 		size: 4,
 		ignoreChars: '0o1l',
 		noise: '2',
 	}
-	const cap = svgCaptcha.create(options);
-	console.log(cap);
-	return cap;
+	result  = await svgCaptcha.create(options);
+	ctx.cookies.set('captcha', req.session); 
+	ctx.headerSent('Content-Type', 'image/svg+xml');
+	return ctx.body = result.data;
 }
 
 module.exports = {

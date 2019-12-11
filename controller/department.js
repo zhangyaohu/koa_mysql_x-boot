@@ -19,9 +19,16 @@ const updateController = function (ctx, next) {
 	let reqParam = ctx.request.body;
 	return parentmentSevice.UpdateService(ctx, next, reqParam);
 }
+
+const getAllDepartmentController = async function (ctx, next) {
+	let reqParam = ctx.request.query;
+	return parentmentSevice.GetAllDepartmentService(ctx, next, reqParam);
+}
+
 module.exports = {
 	GetParentController: getParentController,
 	AddController: addController,
 	DeleteParentController: deleteParentController,
-	UpdateController: updateController
+	UpdateController: updateController,
+	GetAllDepartmentController: getAllDepartmentController
 }

@@ -15,5 +15,7 @@ router.put('/user',  userController.UpdateUserController);
 router.put('/user/status', userController.UpdateStatusController);
 //上传用户图片
 router.post('/upload', userController.UploadUserController);
+//修改密码
+router.put('/updatePsw', userController.UpdateUserPswController)
 
 module.exports = router

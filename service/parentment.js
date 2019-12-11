@@ -1,5 +1,5 @@
 const { query } = require('../utils/query');
-const  { genUniqueId, formatDate, isEmpty} = require('../utils/utils');
+const  { genUniqueId, formatDate, isEmpty, parseSort} = require('../utils/utils');
 //或得父部门
 const  getParentService = async (ctx, next, param) => {
 	let result = {}, sql = `select * from t_department where parent_id= ?`;
@@ -91,9 +91,33 @@ const updateService = async (ctx, next, param) => {
     }
 } 
 
+//查找部门
+ const getAllDepartmentService = async (ctx, next,  param) => {
+	let result = {}, sql = 'select count(*) as total from t_department';
+	let total = await query(sql);
+	let sort = parseSort(param.sort);
+	let sql1 = `select * from t_department`
+	if(param.title) {
+		sql1 += ` where title='${param.title}'`
+	}
+	if(sort && sort.orderBy && sort.orderDirection) {
+		sql1 += ` ORDER BY ${sort.orderBy} ${sort.orderDirection}`
+	}if(param.pageIndex && param.pageSize) {
+		sql1 += ` limit ${(param.pageIndex - 1) * param.pageSize},${param.pageSize}`
+	}
+	result = await query(sql1);
+	return ctx.body = {
+		total:  total[0].total,
+		status: '200',
+		message: '成功',
+		data: result
+	}
+ }
+
 module.exports = {
 	GetParentService: getParentService,
 	AddService: addService,
 	DeleteParentService: deleteParentService,
-	UpdateService: updateService
+	UpdateService: updateService,
+	GetAllDepartmentService: getAllDepartmentService
 }

@@ -8,6 +8,8 @@ router.delete('/:id', departmentController.DeleteParentController);
 //添加部门
 router.post('/add', departmentController.AddController);
 //更新部门
-router.put('/update', departmentController.UpdateController)
+router.put('/update', departmentController.UpdateController);
+//查询父部门
+router.get('/all', departmentController.GetAllDepartmentController);
 
 module.exports = router
