@@ -100,6 +100,12 @@ const updateService = async (ctx, next, param) => {
 	if(param.title) {
 		sql1 += ` where title='${param.title}'`
 	}
+	if(param.id && !param.title) {
+		sql1 += ` where title='${param.id}'`
+	}
+	if(param.id && param.title) {
+		sql1 += ` and title='${param.id}'`
+	}
 	if(sort && sort.orderBy && sort.orderDirection) {
 		sql1 += ` ORDER BY ${sort.orderBy} ${sort.orderDirection}`
 	}if(param.pageIndex && param.pageSize) {

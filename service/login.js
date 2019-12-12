@@ -43,18 +43,6 @@ const loginService = async function (ctx, next) {
 		return ctx.body = result;
 }
 //或得验证码
-<<<<<<< HEAD
-const verifyCodeService =  async function (ctx, next) {
-	let options = {
-		size: 4,
-		ignoreChars: '0o1l',
-		noise: '2',
-	}
-	result  = await svgCaptcha.create(options);
-	ctx.cookies.set('captcha', req.session); 
-	ctx.headerSent('Content-Type', 'image/svg+xml');
-	return ctx.body = result.data;
-=======
 const verifyCodeService = async (ctx, next) => {
 	var captcha = svgCaptcha.create({    //这种生成的是随机数验证码
 		size:4,    //验证码长度
@@ -69,7 +57,6 @@ const verifyCodeService = async (ctx, next) => {
 		ctx.body = captcha.data;
 		ctx.response.type = 'image/svg+xml';
 	})
->>>>>>> d4a366d3161aadfe31a712f92e24624c1deab545
 }
 
 module.exports = {
