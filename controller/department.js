@@ -6,7 +6,7 @@ const getParentController = function (ctx, next) {
 } 
 
 const  deleteParentController = function (ctx, next) {
-	let reqParam = ctx.request.path;
+	let reqParam = ctx.request.query;
 	return parentmentSevice.DeleteParentService(ctx, next, reqParam);
 }
 
