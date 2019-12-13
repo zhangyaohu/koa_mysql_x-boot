@@ -25,10 +25,16 @@ const getAllDepartmentController = async function (ctx, next) {
 	return parentmentSevice.GetAllDepartmentService(ctx, next, reqParam);
 }
 
+const deleteDepartmentTreeController = function (ctx, next) {
+	let reqParam = ctx.request.query;
+	return parentmentSevice.DeleteDepartmentTreeService(ctx, next, reqParam);
+}
+
 module.exports = {
 	GetParentController: getParentController,
 	AddController: addController,
 	DeleteParentController: deleteParentController,
 	UpdateController: updateController,
-	GetAllDepartmentController: getAllDepartmentController
+	GetAllDepartmentController: getAllDepartmentController,
+	DeleteDepartmentTreeController: deleteDepartmentTreeController
 }

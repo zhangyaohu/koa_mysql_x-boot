@@ -11,5 +11,7 @@ router.post('/add', departmentController.AddController);
 router.put('/update', departmentController.UpdateController);
 //查询父部门
 router.get('/all', departmentController.GetAllDepartmentController);
+//删除部门下的子部门
+router.delete('/deletetree', departmentController.DeleteDepartmentTreeController)
 
 module.exports = router

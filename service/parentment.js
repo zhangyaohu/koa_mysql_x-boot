@@ -102,10 +102,10 @@ const updateService = async (ctx, next, param) => {
 		sql1 += ` where title='${param.title}'`
 	}
 	if(param.id && !param.title) {
-		sql1 += ` where title='${param.id}'`
+		sql1 += ` where id='${param.id}'`
 	}
 	if(param.id && param.title) {
-		sql1 += ` and title='${param.id}'`
+		sql1 += ` and id='${param.id}'`
 	}
 	if(sort && sort.orderBy && sort.orderDirection) {
 		sql1 += ` ORDER BY ${sort.orderBy} ${sort.orderDirection}`
@@ -121,10 +121,29 @@ const updateService = async (ctx, next, param) => {
 	}
  }
 
+ const deleteDepartmentTreeService = async (ctx, next, param) => {
+	 let result , sql = `select t_department.id from t_department where parent_id in (?)`;
+	 console.log(param.ids.split(','));
+	 result = await query(sql, ...param.ids.split(','));
+	 console.log(result);
+	 let childIds = result.map((it) => {
+		 return it.id;
+	 });
+	childIds.push(...param.ids.split(','));
+	let sql1 = `DELETE FROM t_department WHERE id IN (?)`;
+	console.log(childIds)
+	let result1 = await query(sql1, ...param.ids.split(','))
+	return ctx.body = {
+		status: '200',
+		message: '成功',
+		data: result1
+	}
+ } 
 module.exports = {
 	GetParentService: getParentService,
 	AddService: addService,
 	DeleteParentService: deleteParentService,
 	UpdateService: updateService,
-	GetAllDepartmentService: getAllDepartmentService
+	GetAllDepartmentService: getAllDepartmentService,
+	DeleteDepartmentTreeService: deleteDepartmentTreeService
 }
